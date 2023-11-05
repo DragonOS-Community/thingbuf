@@ -204,6 +204,7 @@ mod inner {
 mod inner {
     #![allow(dead_code)]
     pub(crate) mod sync {
+        #[allow(unused)]
         pub use core::sync::*;
 
         #[cfg(feature = "alloc")]

@@ -1,10 +1,15 @@
+#![feature(offset_of)]
 #![cfg(feature = "static")]
 use std::{
     fmt::Write,
+    mem::size_of,
     sync::atomic::{AtomicBool, Ordering},
     thread,
 };
-use thingbuf::{recycling, StaticThingBuf};
+use thingbuf::{
+    recycling::{self, DefaultRecycle},
+    StaticThingBuf,
+};
 
 #[test]
 fn static_storage_thingbuf() {
@@ -45,6 +50,12 @@ fn static_storage_thingbuf() {
         assert_eq!(*thing, i);
         i += 1;
     }
+}
+
+#[test]
+fn static_storage_thingbuf_offset_of_slot_field() {
+    static BUF: StaticThingBuf<i32, 16> = StaticThingBuf::new();
+    assert_eq!(BUF.offset_of_slots(), 384 + size_of::<DefaultRecycle>());
 }
 
 #[test]

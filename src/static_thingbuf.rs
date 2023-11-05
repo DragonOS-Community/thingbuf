@@ -192,6 +192,7 @@ use core::fmt;
 /// [vyukov]: https://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
 /// [object pool]: https://en.wikipedia.org/wiki/Object_pool_pattern
 #[cfg_attr(docsrs, doc(cfg(feature = "static")))]
+#[repr(C)]
 pub struct StaticThingBuf<T, const CAP: usize, R = recycling::DefaultRecycle> {
     core: Core,
     recycle: R,
@@ -300,6 +301,11 @@ impl<T, const CAP: usize, R> StaticThingBuf<T, CAP, R> {
     #[inline]
     pub fn len(&self) -> usize {
         self.core.len()
+    }
+
+    /// Returns the offset of the `slots` field in the `StaticThingBuf` struct.
+    pub const fn offset_of_slots(&self) -> usize {
+        memoffset::offset_of!(Self, slots)
     }
 
     /// Returns `true` if there are currently no elements in this `StaticThingBuf`.
